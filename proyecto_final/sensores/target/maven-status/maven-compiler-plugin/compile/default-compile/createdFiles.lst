@@ -1,0 +1,6 @@
+com\mycompany\sensores\SensorDataServlet.class
+com\mycompany\sensores\SensorData.class
+com\mycompany\sensores\ChatClient.class
+com\mycompany\sensores\resources\JakartaEE10Resource.class
+com\mycompany\sensores\ChatServer.class
+com\mycompany\sensores\JakartaRestConfiguration.class
