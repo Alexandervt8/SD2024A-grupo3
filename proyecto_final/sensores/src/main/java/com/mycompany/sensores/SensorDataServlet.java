@@ -28,11 +28,13 @@ public class SensorDataServlet extends HttpServlet {
             createSensorDataTableIfNotExists();
 
             // Insertar datos de prueba
+            /*
             String insertSql = "INSERT INTO SensorData (id, sensorId, value, timestamp) VALUES (?, ?, ?, ?)";
             ignite.cache("SensorDataCache").query(new SqlFieldsQuery(insertSql)
                     .setArgs(1L, "sensor1", 23.5, Timestamp.valueOf(LocalDateTime.now()))).getAll();
             ignite.cache("SensorDataCache").query(new SqlFieldsQuery(insertSql)
-                    .setArgs(2L, "sensor2", 27.8, Timestamp.valueOf(LocalDateTime.now()))).getAll();
+                    .setArgs(2L, "sensor2", 27.8, Timestamp.valueOf(LocalDateTime.now()))).getAll();*/
+            generateRandomSensorData(10);
 
             System.out.println("Datos de prueba insertados correctamente.");
         } catch (Exception e) {
@@ -53,6 +55,25 @@ public class SensorDataServlet extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException("Error creating SensorData table", e);
         }
+    }
+    
+    private void generateRandomSensorData(int n) {
+        String insertSql = "INSERT INTO SensorData (id, sensorId, value, timestamp) VALUES (?, ?, ?, ?)";
+        
+        for (long i = 1; i <= n; i++) {
+            String sensorId = "sensor" + i;
+            double value = 10.0 + Math.random() * 90.0;  // Valor aleatorio entre 10 y 100
+            Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+            
+            try {
+                ignite.cache("SensorDataCache").query(new SqlFieldsQuery(insertSql)
+                        .setArgs(i, sensorId, value, timestamp)).getAll();
+            } catch (Exception e) {
+                throw new RuntimeException("Error inserting sensor data", e);
+            }
+        }
+        
+        System.out.println(n + " datos de sensores aleatorios insertados correctamente.");
     }
 
     @Override
@@ -98,3 +119,5 @@ public class SensorDataServlet extends HttpServlet {
         super.destroy();
     }
 }
+
+

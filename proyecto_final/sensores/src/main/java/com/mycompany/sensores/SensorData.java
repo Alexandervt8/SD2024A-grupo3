@@ -1,47 +1,54 @@
 package com.mycompany.sensores;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class SensorData implements Serializable {
-    private Long id;
     private String sensorId;
     private double value;
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
 
-    public SensorData(Long id, String sensorId, double value, Timestamp timestamp) {
-        this.id = id;
+    public SensorData(String sensorId, double value, LocalDateTime timestamp) {
         this.sensorId = sensorId;
         this.value = value;
         this.timestamp = timestamp;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getSensorId() {
         return sensorId;
     }
 
+    public void setSensorId(String sensorId) {
+        this.sensorId = sensorId;
+    }
+
     public double getValue() {
         return value;
     }
 
-    public Timestamp getTimestamp() {
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
     public String toString() {
         return "SensorData{" +
-                "id=" + id +
-                ", sensorId='" + sensorId + '\'' +
+                "sensorId='" + sensorId + '\'' +
                 ", value=" + value +
                 ", timestamp=" + timestamp +
                 '}';
     }
 }
+
+
 
 
 
