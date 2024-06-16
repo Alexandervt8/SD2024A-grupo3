@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SensorReadings>
+    <sensors>
+        <sensor>
+            <id>17</id>
+            <sensorId>sensor017</sensorId>
+            <value>23.8</value>
+            <timestamp>2024-06-16T11:10:00</timestamp>
+        </sensor>
+        <sensor>
+            <id>18</id>
+            <sensorId>sensor018</sensorId>
+            <value>29.4</value>
+            <timestamp>2024-06-16T11:15:30</timestamp>
+        </sensor>
+        <sensor>
+            <id>19</id>
+            <sensorId>sensor019</sensorId>
+            <value>16.7</value>
+            <timestamp>2024-06-16T11:20:45</timestamp>
+        </sensor>
+    </sensors>
+</SensorReadings>
