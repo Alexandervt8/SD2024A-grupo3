@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
-import java.util.List;
 import org.apache.ignite.Ignite;
-import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.query.SqlFieldsQuery;
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.List;
 
 @WebServlet(name = "SensorDataServlet", urlPatterns = {"/sensor-data"})
 public class SensorDataServlet extends HttpServlet {
@@ -24,14 +24,14 @@ public class SensorDataServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         try {
-            ignite = Ignition.start("META-INF/ignite.xml");
+            ignite = IgniteUtil.getIgniteInstance();
 
             // Crear la tabla SensorData si no existe
             createSensorDataTableIfNotExists();
 
-            System.out.println("Servlet iniciado correctamente.");
+            System.out.println("SensorDataServlet - Servlet iniciado correctamente.");
         } catch (Exception e) {
-            throw new ServletException("Error al iniciar Ignite", e);
+            throw new ServletException("SensorDataServlet - Error al iniciar Ignite", e);
         }
     }
 
@@ -46,12 +46,17 @@ public class SensorDataServlet extends HttpServlet {
         try {
             ignite.cache("SensorDataCache").query(new SqlFieldsQuery(sql)).getAll();
         } catch (Exception e) {
-            throw new RuntimeException("Error creating SensorData table", e);
+            throw new RuntimeException("SensorDataServlet - Error creando SensorData table", e);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Agregar encabezados CORS
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        
         try {
             // Leer los datos JSON del cuerpo de la solicitud
             ObjectMapper mapper = new ObjectMapper();
@@ -65,12 +70,12 @@ public class SensorDataServlet extends HttpServlet {
             response.setContentType("text/plain");
             response.setStatus(HttpServletResponse.SC_OK);
             PrintWriter out = response.getWriter();
-            out.println("Datos recibidos y almacenados correctamente.");
+            System.out.println("SensorDataServlet - Datos recibidos y almacenados correctamente.");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter out = response.getWriter();
             e.printStackTrace(out); // Imprimir el stack trace en el PrintWriter
-            out.println("Error al procesar los datos: " + e.getMessage());
+            System.out.println("SensorDataServlet - Error al procesar los datos: " + e.getMessage());
         }
     }
 
@@ -85,12 +90,16 @@ public class SensorDataServlet extends HttpServlet {
                 throw new RuntimeException("Error inserting sensor data", e);
             }
         }
-
-        System.out.println(sensorDataList.size() + " datos de sensores insertados correctamente.");
+        System.out.println("SensorDataServlet - " + sensorDataList.size() + " datos de sensores insertados correctamente.");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Agregar encabezados CORS
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -104,9 +113,8 @@ public class SensorDataServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        if (ignite != null) {
-            Ignition.stop(true); // Detener Ignite cuando el servlet se destruye
-        }
+        IgniteUtil.stopIgniteInstance();
         super.destroy();
     }
 }
+

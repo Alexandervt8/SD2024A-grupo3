@@ -1,23 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-   version="6.0">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
-    <!-- Configuración del servlet -->
+
+    <!-- Configuración del servlet para SensorDataServlet -->
     <servlet>
         <servlet-name>SensorDataServlet</servlet-name>
         <servlet-class>com.mycompany.sensores.SensorDataServlet</servlet-class>
     </servlet>
-    
-    <!-- Mapeo del servlet -->
+
+    <!-- Mapeo del servlet para SensorDataServlet -->
     <servlet-mapping>
         <servlet-name>SensorDataServlet</servlet-name>
         <url-pattern>/sensor-data</url-pattern>
     </servlet-mapping>
+
+    <!-- Configuración del servlet para ClientStartServlet -->
+    <servlet>
+        <servlet-name>ClientStartServlet</servlet-name>
+        <servlet-class>com.mycompany.sensores.ClientStartServlet</servlet-class>
+    </servlet>
+
+    <!-- Mapeo del servlet para ClientStartServlet -->
+    <servlet-mapping>
+        <servlet-name>ClientStartServlet</servlet-name>
+        <url-pattern>/start-client</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ConstantServlet</servlet-name>
+        <servlet-class>com.mycompany.sensores.ConstantServlet</servlet-class>
+    </servlet>
+
+    <!-- Mapeo del servlet para ConstantServlet -->
+    <servlet-mapping>
+        <servlet-name>ConstantServlet</servlet-name>
+        <url-pattern>/constants</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>VariableServlet</servlet-name>
+        <servlet-class>com.mycompany.sensores.VariableServlet</servlet-class>
+    </servlet>
+
+    <!-- Mapeo del servlet para VariableServlet -->
+    <servlet-mapping>
+        <servlet-name>VariableServlet</servlet-name>
+        <url-pattern>/variables</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>
 

@@ -4,7 +4,7 @@
         <sensor>
             <id>11</id>
             <sensorId>sensor011</sensorId>
-            <value>80.0</value>
+            <value>120.0</value>
             <timestamp>2024-06-16T10:40:00</timestamp>
         </sensor>
         <sensor>

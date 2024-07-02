@@ -88,10 +88,3 @@ public class SensorData implements Serializable {
                 '}';
     }
 }
-
-
-
-
-
-
-

@@ -8,52 +8,53 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class SensorClient {
+public class VariableClient {
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("SensorClient - Usar: java SensorClient <xml_file>");
+            System.out.println("VariableClient - Usar: java VariableClient <xml_file>");
             return;
         }
 
         String xmlFile = args[0];
 
         try {
-            List<SensorData> sensorDataList = readSensorDataFromXml(xmlFile);
-            sendSensorDataToServer(sensorDataList);
+            List<VariableData> variableDataList = readVariableDataFromXml(xmlFile);
+            sendVariableDataToServer(variableDataList);
         } catch (JAXBException e) {
-            System.err.println("SensorClient - Error al procesar el archivo XML: " + e.getMessage());
+            System.err.println("VariableClient - Error al procesar el archivo XML: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static List<SensorData> readSensorDataFromXml(String filePath) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(SensorReadings.class);
+    private static List<VariableData> readVariableDataFromXml(String filePath) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(Estacion.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        SensorReadings readings = (SensorReadings) unmarshaller.unmarshal(new File(filePath));
-        return readings.getSensors();
+        Estacion estacion = (Estacion) unmarshaller.unmarshal(new File(filePath));
+        
+        List<VariableData> variableDataList = estacion.getSensores();
+        return variableDataList;
     }
-
-    private static void sendSensorDataToServer(List<SensorData> sensorDataList) {
+    
+    private static void sendVariableDataToServer(List<VariableData> variableDataList) {
         try {
             // Convertir lista a JSON
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule()); // Registrar el módulo JavaTimeModule
-            String json = mapper.writeValueAsString(sensorDataList);
+            String json = mapper.writeValueAsString(variableDataList);
             
             // Imprimir el JSON que se enviará al servidor
-            System.out.println("SensorClient - JSON a enviar al servidor: " + json);
+            System.out.println("VariableClient - JSON a enviar al servidor: " + json);
 
             // Conectar al servlet
-            URL url = new URL("http://localhost:8080/sensores/sensor-data");
+            URL url = new URL("http://localhost:8080/sensores/variables");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
@@ -67,28 +68,13 @@ public class SensorClient {
 
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("SensorClient - Datos enviados correctamente al servidor.");
+                System.out.println("VariableClient - Datos enviados correctamente al servidor.");
             } else {
-                System.err.println("SensorClient - Error al enviar datos al servidor. Código de respuesta: " + responseCode + " - " + con.getResponseMessage());
+                System.err.println("VariableClient - Error al enviar datos al servidor. Código de respuesta: " + responseCode + " - " + con.getResponseMessage());
             }
         } catch (Exception e) {
-            System.err.println("SensorClient - Error al enviar datos al servidor: " + e.getMessage());
+            System.err.println("VariableClient - Error al enviar datos al servidor: " + e.getMessage());
         }
-    }
-}
-
-@XmlRootElement(name = "SensorReadings")
-class SensorReadings {
-    private List<SensorData> sensors;
-
-    @XmlElementWrapper(name = "sensors")
-    @XmlElement(name = "sensor")
-    public List<SensorData> getSensors() {
-        return sensors;
-    }
-
-    public void setSensors(List<SensorData> sensors) {
-        this.sensors = sensors;
     }
 }
 

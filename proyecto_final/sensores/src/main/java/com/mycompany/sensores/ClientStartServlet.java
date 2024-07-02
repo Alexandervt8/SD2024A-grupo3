@@ -28,10 +28,10 @@ public class ClientStartServlet extends HttpServlet {
             SensorClient.main(new String[]{xmlFilePath});
 
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("Client started successfully with file: " + xmlFilePath);
+            response.getWriter().write("Cliente inicio satisfactoriamente con archivo: " + xmlFilePath);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error starting client: " + e.getMessage());
+            response.getWriter().write("Error no se inicio el cliente: " + e.getMessage());
         }
     }
 }

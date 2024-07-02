@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!-- <lecturas_sensores>-->
+    <estacion>
+        <ide>1</ide>
+        <nombreEst>Estación Meteorológica A</nombreEst>
+        <sensores>
+            <sensor>
+                <id>1</id>
+                <nombre>temperatura</nombre>
+                <valor>9.4</valor>
+                <unidad>°C</unidad>
+                <tiempo>2024-06-24T01:00:00</tiempo>
+            </sensor>
+            <sensor>
+                <id>2</id>
+                <nombre>humedad_relativa</nombre>
+                <valor>60</valor>
+                <unidad>%</unidad>
+                <tiempo>2024-06-24T01:00:00</tiempo>
+            </sensor>
+            <sensor>
+                <id>3</id>
+                <nombre>radiacion_solar</nombre>
+                <valor>20</valor>
+                <unidad>MJ/m²/día</unidad>
+                <tiempo>2024-06-24T01:00:00</tiempo>
+            </sensor>
+            <sensor>
+                <id>4</id>
+                <nombre>velocidad_viento</nombre>
+                <valor>2</valor>
+                <unidad>m/s</unidad>
+                <tiempo>2024-06-24T01:00:00</tiempo>
+            </sensor>
+            <sensor>
+                <id>5</id>
+                <nombre>presion_atmosferica</nombre>
+                <valor>101.3</valor>
+                <unidad>kPa</unidad>
+                <tiempo>2024-06-24T01:00:00</tiempo>
+            </sensor>
+        </sensores>
+    </estacion>
+    <!-- Puedes añadir más estaciones si es necesario -->
+  <!-- </lecturas_sensores>-->
