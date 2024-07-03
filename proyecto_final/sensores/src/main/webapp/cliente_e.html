@@ -2,45 +2,41 @@
 <html>
 <head>
     <title>Datos de Sensores</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
 </head>
 <body>
-    <h1>Datos de Sensores</h1>
-    <button onclick="fetchSensorData()">Obtener Datos de Sensores</button>
-    <table id="sensorTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>ID de estacion</th>
-                <th>Nombre de Estacion</th>
-                <th>Nombre de sensor</th>
-                <th>Valor</th>
-                <th>Unidad</th>
-                <th>Fecha y Hora</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Aquí se insertarán las filas de datos -->
-        </tbody>
-    </table>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+
+    <div id="content">
+        <h1>Datos de Sensores</h1>
+        <button onclick="fetchSensorData()" class="button">Obtener Datos de Sensores</button>
+
+        <table id="sensorTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID de estacion</th>
+                    <th>Nombre de Estacion</th>
+                    <th>Nombre de sensor</th>
+                    <th>Valor</th>
+                    <th>Unidad</th>
+                    <th>Fecha y Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se insertarán las filas de datos -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
 
     <script>
         function getBaseURL() {
             const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
             return isLocalhost ? 'http://localhost:8080' : `http://${location.hostname}:8080`;
         }
+
         function fetchSensorData() {
             const baseURL = getBaseURL();
             fetch(`${baseURL}/sensores/variables`)
@@ -72,7 +68,13 @@
                     console.error('Error al obtener los datos del sensor:', error);
                 });
         }
+
+        // Cargar las constantes al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConstants(); // Llama a la función loadConstants desde tu código original
+        });
     </script>
 </body>
 </html>
+
 

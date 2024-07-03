@@ -1,0 +1,134 @@
+/* styles.css */
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+a:hover {
+    color: #666;
+}
+
+/* Estilos para el menú lateral */
+#sidebar {
+    width: 250px;
+    background-color: #34495e; /* Color de fondo del menú */
+    color: #fff; /* Color del texto */
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+#sidebar h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li {
+    padding: 10px;
+    text-align: center;
+}
+
+#sidebar ul li a {
+    display: block;
+    color: #fff;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+#sidebar ul li a:hover {
+    background-color: #2c3e50; /* Color de fondo en hover */
+    color: #fff;
+}
+
+/* Estilos para el área de contenido */
+#content {
+    margin-left: 250px; /* Ajuste para dejar espacio al menú */
+    padding: 20px;
+}
+
+/* Estilos del botón */
+   .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db; /* Azul primario */
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Efecto hover */
+   .button:hover {
+            background-color: #2980b9; /* Azul más oscuro al hacer hover */
+        }     
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px; /* Espacio inferior entre la tabla y otros elementos */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+table th, table td {
+    border: 1px solid #ddd; /* Borde más suave */
+    padding: 12px; /* Espaciado interior */
+    text-align: center; /* Alineación centrada */
+}
+
+table th {
+    background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+    color: #333; /* Color de texto para las celdas de encabezado */
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Color de fondo para filas pares */
+}
+
+table tr:hover {
+    background-color: #f1f1f1; /* Color de fondo en hover */
+}
+
+/* Estilos generales para todas las páginas */
+
+/* Estilos específicos para la fórmula de Penman-Monteith en la página deseada */
+.formula-container {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.formula-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.formula-equation {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.formula-description {
+    margin-top: 10px;
+}

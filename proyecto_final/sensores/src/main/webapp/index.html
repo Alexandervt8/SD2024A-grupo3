@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explicación de Evapotranspiración y Lisímetro</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
+
+</head>
+<body>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+
+    <div id="content">
+        <h1>Explicación de Evapotranspiración y Lisímetro</h1>
+
+        <p>La evapotranspiración es el proceso mediante el cual el agua se mueve desde la superficie del suelo hacia la atmósfera a través de la evaporación directa desde el suelo y la transpiración de las plantas. Este proceso es fundamental para entender y gestionar el balance hídrico en la agricultura.</p>
+
+        <div class="formula-container">
+            <h2 class="formula-title">Fórmula de Penman-Monteith</h2>
+            <p class="formula-description">
+                La fórmula de Penman-Monteith es utilizada para calcular la evapotranspiración de referencia (ETo) y se expresa de la siguiente manera:
+            </p>
+            <p class="formula-equation">
+                ETo = (0.408 * Δ * (Rn - G) + γ * (900 / (T + 273)) * u * (es - ea)) / (Δ + γ * (1 + 0.34 * u))
+            </p>
+            <p class="formula-description">
+                Donde:
+            </p>
+            <ul class="formula-description">
+                <li><strong>ETo</strong>: Evapotranspiración de referencia.</li>
+                <li><strong>Δ</strong>: Gradiente de presión de vapor.</li>
+                <li><strong>Rn</strong>: Radiación neta.</li>
+                <li><strong>G</strong>: Calor del suelo.</li>
+                <li><strong>γ</strong>: Constante psicométrica.</li>
+                <li><strong>T</strong>: Temperatura media diaria del aire.</li>
+                <li><strong>u</strong>: Velocidad del viento a 2 metros sobre la superficie del suelo.</li>
+                <li><strong>es</strong>: Presión de vapor saturado.</li>
+                <li><strong>ea</strong>: Presión de vapor actual.</li>
+            </ul>
+        </div>
+
+        <p>Para un agricultor, determinar el coeficiente de cultivo (Kc) es crucial para calcular la evapotranspiración real de los cultivos en su terreno. Un método común para medir la evapotranspiración es mediante el uso de un lisímetro, un instrumento que mide la cantidad de agua que se evapora o se transpira en un área específica de cultivo.</p>
+        
+        <p>Para determinar el coeficiente de cultivo (Kc), el agricultor puede utilizar un lisímetro, un instrumento que mide la cantidad de agua que se evapora o se transpira en un área específica de cultivo. El agricultor proporciona los datos obtenidos del lisímetro al sistema, que incluye la evapotranspiración de referencia (ETo) calculada por la fórmula de Penman-Monteith</p>
+        
+        <p>Con estos datos combinados, el sistema puede calcular y proporcionar al agricultor el coeficiente de cultivo (Kc) específico para el tipo de cultivo que está cultivando, ayudándolo así a optimizar el riego y la gestión del agua en su terreno.</p>
+
+    </div>
+
+    <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
+</body>
+</html>
+
+

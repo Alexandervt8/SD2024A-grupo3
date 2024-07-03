@@ -2,35 +2,42 @@
 <html>
 <head>
     <title>Promedio de Datos de Sensores</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
 </head>
 <body>
-    <h1>Promedio de Datos de Sensores</h1>
-    <button onclick="fetchPromedios()">Obtener Promedios</button>
-    <button onclick="fetchConstantes()">Obtener Constantes</button>
-    <button onclick="calcularETo()">Calcular ETo</button>
-    
-    <div id="promedios">
-        <h2>Promedios de Sensores</h2>
-        <p>Temperatura: <span id="promedio-temperatura"></span></p>
-        <p>Humedad Relativa: <span id="promedio-humedad-relativa"></span></p>
-        <p>Radiacion Solar: <span id="promedio-radiacion-solar"></span></p>
-        <p>Velocidad del Viento: <span id="promedio-velocidad-viento"></span></p>
-        <p>Presion Atmosferica: <span id="promedio-presion-atmosferica"></span></p>
-    </div>
-    
-    <div id="constantes">
-        <h2>Valores de Constantes</h2>
-        <p>Lambda: <span id="constante-lambda"></span></p>
-        <p>Delta: <span id="constante-delta"></span></p>
-        <p>Rho: <span id="constante-rho"></span></p>
-        <p>Cp: <span id="constante-cp"></span></p>
-        <p>Gamma: <span id="constante-gamma"></span></p>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+
+    <div id="content">
+        <h1>Promedio de Datos de Sensores</h1>
+        <button onclick="fetchPromedios()" class="button">Obtener Promedios</button>
+        <button onclick="fetchConstantes()" class="button">Obtener Constantes</button>
+        <button onclick="calcularETo()" class="button">Calcular ETo</button>
+        
+        <div id="promedios">
+            <h2>Promedios de Sensores</h2>
+            <p>Temperatura: <span id="promedio-temperatura"></span></p>
+            <p>Humedad Relativa: <span id="promedio-humedad-relativa"></span></p>
+            <p>Radiacion Solar: <span id="promedio-radiacion-solar"></span></p>
+            <p>Velocidad del Viento: <span id="promedio-velocidad-viento"></span></p>
+            <p>Presion Atmosferica: <span id="promedio-presion-atmosferica"></span></p>
+        </div>
+        
+        <div id="constantes">
+            <h2>Valores de Constantes</h2>
+            <p>Lambda: <span id="constante-lambda"></span></p>
+            <p>Delta: <span id="constante-delta"></span></p>
+            <p>Rho: <span id="constante-rho"></span></p>
+            <p>Cp: <span id="constante-cp"></span></p>
+            <p>Gamma: <span id="constante-gamma"></span></p>
+        </div>
+
+        <div id="resultado-eto">
+            <h2>Resultado de ETo</h2>
+            <p>ETo Calculada: <span id="eto-calculada"></span></p>
+        </div>
     </div>
 
-    <div id="resultado-eto">
-        <h2>Resultado de ETo</h2>
-        <p>ETo Calculada: <span id="eto-calculada"></span></p>
-    </div>
+    <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
 
     <script>
         function getBaseURL() {
@@ -110,6 +117,7 @@
     </script>
 </body>
 </html>
+
 
 
 

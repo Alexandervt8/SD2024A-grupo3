@@ -2,6 +2,25 @@
 <html>
 <head>
     <title>Modificar Constantes</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
+</head>
+<body>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+
+    <div id="content">
+        <h1>Modificar Constantes</h1>
+        <form>
+            <label>delta: <input type="text" id="delta"></label><br>
+            <label>gamma: <input type="text" id="gamma"></label><br>
+            <label>cp: <input type="text" id="cp"></label><br>
+            <label>lambda: <input type="text" id="lambda"></label><br>
+            <label>rho: <input type="text" id="rho"></label><br>
+            <button type="button" onclick="updateConstants()" class="button">Actualizar Constantes</button>
+        </form>
+    </div>
+
+    <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
+    
     <script>
         function getBaseURL() {
             const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
@@ -60,19 +79,12 @@
                 alert('Error al actualizar las constantes. Verifica la consola para más detalles.');
             });
         }
+
+        // Cargar las constantes al cargar la página
+        document.addEventListener('DOMContentLoaded', loadConstants);
     </script>
-</head>
-<body onload="loadConstants()">
-    <h1>Modificar Constantes</h1>
-    <form>
-        <label>delta: <input type="text" id="delta"></label><br>
-        <label>gamma: <input type="text" id="gamma"></label><br>
-        <label>cp: <input type="text" id="cp"></label><br>
-        <label>lambda: <input type="text" id="lambda"></label><br>
-        <label>rho: <input type="text" id="rho"></label><br>
-        <button type="button" onclick="updateConstants()">Actualizar Constantes</button>
-    </form>
 </body>
 </html>
+
 
 
