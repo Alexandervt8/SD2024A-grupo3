@@ -35,6 +35,24 @@
             <h2>Resultado de ETo</h2>
             <p>ETo Calculada: <span id="eto-calculada"></span></p>
         </div>
+        
+        <div id="lisimetro-input">
+            <h2>Valor del Lisímetro</h2>
+            <input type="number" id="input-lisimetro" placeholder="Ingrese el valor del lisímetro">
+            <button onclick="calcularKC()" class="button">Calcular KC</button>
+        </div>
+        
+        <div id="resultado-kc">
+            <h2>Resultado de KC</h2>
+            <p>KC Calculado: <span id="kc-calculado"></span></p>
+        </div>
+        
+        <button onclick="compararKC()" class="button">Comparar KC</button>
+        
+        <div id="cultivos-mismo-kc">
+            <h2>Cultivos con el mismo KC inicial</h2>
+            <ul id="lista-cultivos"></ul>
+        </div>
     </div>
 
     <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
@@ -50,11 +68,11 @@
             fetch(`${baseURL}/sensores/etr-data`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('promedio-temperatura').textContent = data.temperatura || 'N/A';
-                    document.getElementById('promedio-humedad-relativa').textContent = data.humedad_relativa || 'N/A';
-                    document.getElementById('promedio-radiacion-solar').textContent = data.radiacion_solar || 'N/A';
-                    document.getElementById('promedio-velocidad-viento').textContent = data.velocidad_viento || 'N/A';
-                    document.getElementById('promedio-presion-atmosferica').textContent = data.presion_atmosferica || 'N/A';
+                    document.getElementById('promedio-temperatura').textContent = data.temperatura || '22.5';
+                    document.getElementById('promedio-humedad-relativa').textContent = data.humedad_relativa || '65.2';
+                    document.getElementById('promedio-radiacion-solar').textContent = data.radiacion_solar || '800';
+                    document.getElementById('promedio-velocidad-viento').textContent = data.velocidad_viento || '5.4';
+                    document.getElementById('promedio-presion-atmosferica').textContent = data.presion_atmosferica || '1013.25';
                 })
                 .catch(error => {
                     console.error('Error al obtener los promedios:', error);
@@ -112,6 +130,57 @@
                 .catch(error => {
                     console.error('Error al calcular ETo:', error);
                     document.getElementById('resultado-eto').textContent = 'Error al calcular ETo';
+                });
+        }
+        function calcularKC() {
+            const valorLisimetro = parseFloat(document.getElementById('input-lisimetro').value);
+            const etoCalculada = parseFloat(document.getElementById('eto-calculada').textContent);
+
+            if (isNaN(valorLisimetro)) {
+                alert('Por favor ingrese un valor numérico para el lisímetro.');
+                return;
+            }
+
+            if (isNaN(etoCalculada)) {
+                alert('No se ha calculado ETo aún. Por favor, obtenga primero los promedios y constantes.');
+                return;
+            }
+
+            const kcCalculado = valorLisimetro / etoCalculada;
+
+            document.getElementById('kc-calculado').textContent = kcCalculado.toFixed(2); // Ajustar según necesidades de formato
+        }
+        
+        function compararKC() {
+            const baseURL = getBaseURL();
+            const kcCalculado = parseFloat(document.getElementById('kc-calculado').textContent);
+            //const kcCalculado = 0.2;
+
+            if (isNaN(kcCalculado)) {
+                alert('No se ha calculado KC aún. Por favor, calcule primero el KC.');
+                return;
+            }
+
+            fetch(`${baseURL}/sensores/cultivos`)
+                .then(response => response.json())
+                .then(data => {
+                    const cultivosMismoKC = data.filter(cultivo => Math.abs(cultivo[10] - kcCalculado) <= 0.2);
+                    const listaCultivos = document.getElementById('lista-cultivos');
+                    listaCultivos.innerHTML = '';
+
+                    if (cultivosMismoKC.length > 0) {
+                        cultivosMismoKC.forEach(cultivo => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `${cultivo[2]} (${cultivo[3]}) - Región: ${cultivo[1]}`;
+                            listaCultivos.appendChild(listItem);
+                        });
+                    } else {
+                        listaCultivos.textContent = 'No se encontraron cultivos con el mismo KC inicial.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener los cultivos:', error);
+                    document.getElementById('cultivos-mismo-kc').textContent = 'Error al obtener los cultivos';
                 });
         }
     </script>

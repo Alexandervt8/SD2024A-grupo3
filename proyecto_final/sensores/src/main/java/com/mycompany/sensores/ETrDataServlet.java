@@ -46,8 +46,12 @@ public class ETrDataServlet extends HttpServlet {
                 String sql = "SELECT AVG(valor) FROM VariableData WHERE nombre = ?";
                 List<List<?>> result = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(sql).setArgs(sensorType)).getAll();
 
-                double average = result.isEmpty() || result.get(0).isEmpty() ? 0.0 : (Double) result.get(0).get(0);
-                averages.put(sensorType, average);
+                Double average = null;
+                if (!result.isEmpty() && !result.get(0).isEmpty() && result.get(0).get(0) != null) {
+                    average = (Double) result.get(0).get(0);
+                }
+                
+                averages.put(sensorType, average != null ? average : 0.0);
             }
             
             ObjectMapper mapper = new ObjectMapper();
