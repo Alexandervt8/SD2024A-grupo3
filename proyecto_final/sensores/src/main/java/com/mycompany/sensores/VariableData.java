@@ -27,8 +27,8 @@ class VariableLocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 public class VariableData implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private long id;
-    private int ide; // ID de la estación
+    private String id;
+    private String ide; // ID de la estación
     private String nombreEst; // Nombre de la estación
     private String nombre;
     private double valor;
@@ -40,20 +40,20 @@ public class VariableData implements Serializable {
     }
 
     @XmlElement(name = "id")
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     @XmlElement(name = "ide")
-    public int getIde() {
+    public String getIde() {
         return ide;
     }
 
-    public void setIde(int ide) {
+    public void setIde(String ide) {
         this.ide = ide;
     }
 

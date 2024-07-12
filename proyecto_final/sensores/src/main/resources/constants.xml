@@ -1,156 +1,234 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <constantes>
-                        
+                                    
+    
+    
+    
     
     
     
     
     <constante>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <nombre>delta</nombre>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <valor>0.43</valor>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <unidad>kPa/°C</unidad>
-                                            
+                                                                    
+    
+    
+    
     
     
     
     
     </constante>
-                        
+                                    
+    
+    
+    
     
     
     
     
     <constante>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <nombre>gamma</nombre>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <valor>0.5555</valor>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <unidad>kPa/°C</unidad>
-                                            
+                                                                    
+    
+    
+    
     
     
     
     
     </constante>
-                        
+                                    
+    
+    
+    
     
     
     
     
     <constante>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <nombre>cp</nombre>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <valor>1.2255</valor>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <unidad>MJ/kg/°C</unidad>
-                                            
+                                                                    
+    
+    
+    
     
     
     
     
     </constante>
-                        
+                                    
+    
+    
+    
     
     
     
     
     <constante>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <nombre>lambda</nombre>
-                                                
+                                                                        
         
         
         
         
-        <valor>2.33333</valor>
-                                                
+        
+        
+        
+        <valor>2.2</valor>
+                                                                        
+        
+        
+        
         
         
         
         
         <unidad>MJ/kg</unidad>
-                                            
+                                                                    
+    
+    
+    
     
     
     
     
     </constante>
-                        
+                                    
+    
+    
+    
     
     
     
     
     <constante>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <nombre>rho</nombre>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <valor>1.225</valor>
-                                                
+                                                                        
+        
+        
+        
         
         
         
         
         <unidad>kg/m³</unidad>
-                                            
+                                                                    
+    
+    
+    
     
     
     
     
     </constante>
-                    
+                                
+
+
+
 
 
 

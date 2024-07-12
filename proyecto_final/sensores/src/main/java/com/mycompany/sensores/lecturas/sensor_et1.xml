@@ -2,7 +2,7 @@
   <!-- <lecturas_sensores>-->
     <estacion>
         <ide>1</ide>
-        <nombreEst>Estación Meteorológica A</nombreEst>
+        <nombreEst>Estacion Meteorologica A</nombreEst>
         <sensores>
             <sensor>
                 <id>1</id>

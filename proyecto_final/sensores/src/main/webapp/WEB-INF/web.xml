@@ -49,11 +49,6 @@
         <servlet-name>VariableServlet</servlet-name>
         <servlet-class>com.mycompany.sensores.VariableServlet</servlet-class>
     </servlet>
-    
-    <servlet>
-        <servlet-name>CultivosServlet</servlet-name>
-        <servlet-class>com.mycompany.sensores.CultivosServlet</servlet-class>
-    </servlet>
 
     <!-- Mapeo del servlet para VariableServlet -->
     <servlet-mapping>
@@ -61,10 +56,6 @@
         <url-pattern>/variables</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>CultivosServlet</servlet-name>
-        <url-pattern>/cultivos</url-pattern>
-    </servlet-mapping>
 
 </web-app>
 

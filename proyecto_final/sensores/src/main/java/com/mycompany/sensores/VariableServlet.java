@@ -44,8 +44,8 @@ public class VariableServlet extends HttpServlet {
 
     private void createVariableDataTableIfNotExists() {
         String sql = "CREATE TABLE IF NOT EXISTS VariableData (" +
-                "    id LONG PRIMARY KEY, " +
-                "    ide INT, " +
+                "    id BIGINT PRIMARY KEY, " +
+                "    ide VARCHAR, " +
                 "    nombreEst VARCHAR, " +
                 "    nombre VARCHAR, " +
                 "    valor DOUBLE, " +
@@ -117,19 +117,24 @@ public class VariableServlet extends HttpServlet {
     }
     
     private void insertVariableData(List<VariableData> variableDataList) {
+        String maxIdQuery = "SELECT COALESCE(MAX(id), 0) FROM VariableData";
         String insertSql = "MERGE INTO VariableData (id, ide, nombreEst, nombre, valor, unidad, tiempo) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        for (VariableData variableData : variableDataList) {
-            try {
+        try {
+            List<List<?>> maxIdResult = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(maxIdQuery)).getAll();
+            long maxId = (long) maxIdResult.get(0).get(0);
+
+            for (VariableData variableData : variableDataList) {
+                maxId++;
                 ignite.cache("VariableDataCache").query(new SqlFieldsQuery(insertSql)
-                        .setArgs(variableData.getId(), variableData.getIde(), variableData.getNombreEst(),
+                        .setArgs(maxId, variableData.getId(), variableData.getNombreEst(),
                                 variableData.getNombre(), variableData.getValor(), variableData.getUnidad(),
                                 Timestamp.valueOf(variableData.getTiempo()))).getAll();
-            } catch (Exception e) {
-                throw new RuntimeException("VariableServlet - Error inserting variable data", e);
             }
+            System.out.println("VariableServlet - " + variableDataList.size() + " datos de sensores insertados correctamente.");
+        } catch (Exception e) {
+            throw new RuntimeException("VariableServlet - Error inserting variable data", e);
         }
-        System.out.println("VariableServlet - " + variableDataList.size() + " datos de sensores insertados correctamente.");
     }
     
     @Override
@@ -155,53 +160,6 @@ public class VariableServlet extends HttpServlet {
         }
     }
 
-
-
-/*
-    private List<VariableData> readXmlFile(String xmlFilePath) throws JAXBException, IOException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Estacion.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        Estacion estacion = (Estacion) jaxbUnmarshaller.unmarshal(new File(xmlFilePath));
-        return estacion.getSensores();
-    }
-
-    private void insertVariableData(List<VariableData> variableDataList) {
-        String insertSql = "MERGE INTO VariableData (id, nombre, valor, unidad, tiempo) VALUES (?, ?, ?, ?, ?)";
-
-        for (VariableData variableData : variableDataList) {
-            try {
-                ignite.cache("VariableDataCache").query(new SqlFieldsQuery(insertSql)
-                        .setArgs(variableData.getId(), variableData.getNombre(), variableData.getValor(), variableData.getUnidad(), Timestamp.valueOf(variableData.getTiempo()))).getAll();
-            } catch (Exception e) {
-                throw new RuntimeException("VariableServlet - Error inserting variable data", e);
-            }
-        }
-        System.out.println("VariableServlet - " + variableDataList.size() + " datos de sensores insertados correctamente.");
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Agregar encabezados CORS
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-
-        String sql = "SELECT * FROM VariableData";
-        try {
-            List<List<?>> data = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(sql)).getAll();
-
-            // Convertir los datos a JSON
-            ObjectMapper mapper = new ObjectMapper();
-            out.println(mapper.writeValueAsString(data));
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace(out); // Imprimir el stack trace en el PrintWriter
-        }
-    }
-*/
     @Override
     public void destroy() {
         super.destroy();

@@ -77,11 +77,11 @@ public class SensorClient {
     }
 }
 
-@XmlRootElement(name = "SensorReadings")
+@XmlRootElement(name = "estacion")
 class SensorReadings {
     private List<SensorData> sensors;
 
-    @XmlElementWrapper(name = "sensors")
+    @XmlElementWrapper(name = "sensores")
     @XmlElement(name = "sensor")
     public List<SensorData> getSensors() {
         return sensors;

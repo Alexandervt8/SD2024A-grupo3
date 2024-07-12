@@ -8,16 +8,16 @@ import java.util.List;
 @XmlRootElement(name = "estacion")
 public class Estacion {
 
-    private int ide;
+    private String ide;
     private String nombreEst;
     private List<VariableData> sensores;
 
     @XmlElement(name = "ide")
-    public int getIde() {
+    public String getIde() {
         return ide;
     }
 
-    public void setIde(int ide) {
+    public void setIde(String ide) {
         this.ide = ide;
     }
 
