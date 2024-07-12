@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configuracion><nombreEstacion>Estacion Joya</nombreEstacion><letraIdentificadora>B</letraIdentificadora><rutaLocalEstacion>C:\Users\avalt\OneDrive\Documentos\NetBeansProjects\estacion</rutaLocalEstacion><rutaServidorArchivos>http://192.168.56.1:8080/sensores/</rutaServidorArchivos><rutaServidorSubirArchivos>upload</rutaServidorSubirArchivos><rutaServidorDireccionarArchivos>variables</rutaServidorDireccionarArchivos></configuracion>

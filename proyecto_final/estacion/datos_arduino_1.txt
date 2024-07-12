@@ -1,0 +1,29 @@
+No se pudo encontrar un sensor BMP280 válido, ¡verifique la conexión del BMP280!
+<sensor>
+<id>1B</id>
+<nombre>temperatura</nombre>
+<valor>25.66</valor>
+<unidad>°C</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>2B</id>
+<nombre>humedad_relativa</nombre>
+<valor> NAN</valor>
+<unidad>%</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>3B</id>
+<nombre>radiacion_solar</nombre>
+<valor>417.00</valor>
+<unidad>MJ/m²/día</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>4B</id>
+<nombre>velocidad_viento</nombre>
+<valor>0.00</valor>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <lecturas_sensores> -->
+<estacion>
+<ide>B</ide>
+<nombreEst>Estacion Joya</nombreEst>
+<sensores>
+<sensor>
+<id>46B</id>
+<nombre>temperatura</nombre>
+<valor>24.78</valor>
+<unidad>°C</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+<sensor>
+<id>47B</id>
+<nombre>humedad_relativa</nombre>
+<valor> NAN</valor>
+<unidad>%</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+<sensor>
+<id>48B</id>
+<nombre>radiacion_solar</nombre>
+<valor>449.00</valor>
+<unidad>MJ/m²/día</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+</sensores>
+</estacion>

@@ -1,0 +1,30 @@
+<unidad>m/s</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>65B</id>
+<nombre>presion_atmosferica</nombre>
+<valor> NAN</valor>
+<unidad>kPa</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>66B</id>
+<nombre>temperatura</nombre>
+<valor>24.25</valor>
+<unidad>°C</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>67B</id>
+<nombre>humedad_relativa</nombre>
+<valor> NAN</valor>
+<unidad>%</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+
+<sensor>
+<id>68B</id>

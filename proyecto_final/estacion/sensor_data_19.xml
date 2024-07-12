@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <lecturas_sensores> -->
+<estacion>
+<ide>B</ide>
+<nombreEst>Estacion Joya</nombreEst>
+<sensores>
+<sensor>
+<id>69B</id>
+<nombre>velocidad_viento</nombre>
+<valor>0.00</valor>
+<unidad>m/s</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+<sensor>
+<id>70B</id>
+<nombre>presion_atmosferica</nombre>
+<valor> NAN</valor>
+<unidad>kPa</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+<sensor>
+<id>71B</id>
+<nombre>temperatura</nombre>
+<valor>24.17</valor>
+<unidad>°C</unidad>
+<tiempo>2024-06-24T01:00:00</tiempo>
+</sensor>
+</sensores>
+</estacion>
