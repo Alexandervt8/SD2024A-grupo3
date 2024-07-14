@@ -3,6 +3,7 @@
 <head>
     <title>Promedio de Datos de Sensores</title>
     <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
+    <meta charset="UTF-8">
 </head>
 <body>
     <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
@@ -51,7 +52,19 @@
         
         <div id="cultivos-mismo-kc">
             <h2>Cultivos con el mismo KC inicial</h2>
-            <ul id="lista-cultivos"></ul>
+            <table id="tabla-cultivos">
+                <thead>
+                    <tr>
+                        <th>Cultivo</th>
+                        <th>Variedad</th>
+                        <th>Región</th>
+                        <th>KC Incial</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-cuerpo">
+                    <!-- Aquí se agregarán dinámicamente las filas -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -164,23 +177,39 @@
             fetch(`${baseURL}/sensores/cultivos`)
                 .then(response => response.json())
                 .then(data => {
-                    const cultivosMismoKC = data.filter(cultivo => Math.abs(cultivo[10] - kcCalculado) <= 0.2);
-                    const listaCultivos = document.getElementById('lista-cultivos');
-                    listaCultivos.innerHTML = '';
+                    const cultivosMismoKC = data.filter(cultivo => Math.abs(cultivo[10] - kcCalculado) <= 0.07);
+                    const tablaCuerpo = document.getElementById('tabla-cuerpo');
+                    tablaCuerpo.innerHTML = '';
 
                     if (cultivosMismoKC.length > 0) {
                         cultivosMismoKC.forEach(cultivo => {
-                            const listItem = document.createElement('li');
-                            listItem.textContent = `${cultivo[2]} (${cultivo[3]}) - Región: ${cultivo[1]}`;
-                            listaCultivos.appendChild(listItem);
+                            const fila = document.createElement('tr');
+                            const cultivoCell = document.createElement('td');
+                            cultivoCell.textContent = cultivo[2]; // Nombre del cultivo
+                            const variedadCell = document.createElement('td');
+                            variedadCell.textContent = cultivo[3]; // Variedad del cultivo
+                            const regionCell = document.createElement('td');
+                            regionCell.textContent = cultivo[1]; // Región del cultivo
+                            const kcCell = document.createElement('td');
+                            kcCell.textContent = cultivo[10]; // KC Incial
+                            fila.appendChild(cultivoCell);
+                            fila.appendChild(variedadCell);
+                            fila.appendChild(regionCell);
+                            fila.appendChild(kcCell);
+                            tablaCuerpo.appendChild(fila);
                         });
                     } else {
-                        listaCultivos.textContent = 'No se encontraron cultivos con el mismo KC inicial.';
+                        const filaVacia = document.createElement('tr');
+                        const cellVacia = document.createElement('td');
+                        cellVacia.colSpan = 4;
+                        cellVacia.textContent = 'No se encontraron cultivos con el mismo KC inicial.';
+                        filaVacia.appendChild(cellVacia);
+                        tablaCuerpo.appendChild(filaVacia);
                     }
                 })
                 .catch(error => {
                     console.error('Error al obtener los cultivos:', error);
-                    document.getElementById('cultivos-mismo-kc').textContent = 'Error al obtener los cultivos';
+                    document.getElementById('tabla-cultivos').textContent = 'Error al obtener los cultivos';
                 });
         }
     </script>
