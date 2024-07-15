@@ -32,7 +32,7 @@ public class ETrDataServlet extends HttpServlet {
             throw new ServletException("Error al iniciar Ignite", e);
         }
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -40,23 +40,26 @@ public class ETrDataServlet extends HttpServlet {
 
         try {
             Map<String, Double> averages = new HashMap<>();
-            String[] sensorTypes = {"temperatura", "humedad_relativa", "radiacion_solar", "velocidad_viento", "presion_atmosferica"};
-            
+            String[] sensorTypes = {"temperatura_dht22", "humedad_relativa", "radiacion_solar", "velocidad_viento", "temperatura_bmp280", "presion_atmosferica"};
+
             for (String sensorType : sensorTypes) {
                 String sql = "SELECT AVG(valor) FROM VariableData WHERE nombre = ?";
+                System.out.println("Executing SQL: " + sql + " with parameter: " + sensorType);
                 List<List<?>> result = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(sql).setArgs(sensorType)).getAll();
 
-                Double average = null;
-                if (!result.isEmpty() && !result.get(0).isEmpty() && result.get(0).get(0) != null) {
-                    average = (Double) result.get(0).get(0);
+                if (result.isEmpty() || result.get(0).isEmpty()) {
+                    System.out.println("No result for sensor type: " + sensorType);
+                    averages.put(sensorType, 0.0);
+                } else {
+                    System.out.println("Result for sensor type " + sensorType + ": " + result.get(0).get(0));
+                    averages.put(sensorType, (Double) result.get(0).get(0));
                 }
-                
-                averages.put(sensorType, average != null ? average : 0.0);
             }
-            
+
             ObjectMapper mapper = new ObjectMapper();
             out.println(mapper.writeValueAsString(averages));
         } catch (Exception e) {
+            e.printStackTrace(); // Log the stack trace to the server logs
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.println("{\"error\": \"Error al calcular los promedios: " + e.getMessage() + "\"}");
         }

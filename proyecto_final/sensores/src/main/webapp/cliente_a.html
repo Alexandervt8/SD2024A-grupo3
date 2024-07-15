@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Promedio de Datos de Sensores</title>
     <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
-    <meta charset="UTF-8">
 </head>
 <body>
     <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
@@ -16,27 +16,28 @@
         
         <div id="promedios">
             <h2>Promedios de Sensores</h2>
-            <p>Temperatura: <span id="promedio-temperatura"></span></p>
-            <p>Humedad Relativa: <span id="promedio-humedad-relativa"></span></p>
-            <p>Radiacion Solar: <span id="promedio-radiacion-solar"></span></p>
-            <p>Velocidad del Viento: <span id="promedio-velocidad-viento"></span></p>
-            <p>Presion Atmosferica: <span id="promedio-presion-atmosferica"></span></p>
+            <p>Temperatura <strong>(°C)</strong>: <span id="promedio-temperatura"></span></p>
+            <p>Humedad Relativa <strong>(%)</strong>: <span id="promedio-humedad-relativa"></span></p>
+            <p>Radiacion Solar <strong>(MJ/m²/día)</strong>: <span id="promedio-radiacion-solar"></span></p>
+            <p>Velocidad del Viento <strong>(m/s)</strong>: <span id="promedio-velocidad-viento"></span></p>
+            <p>Presion Atmosferica <strong>(KPa)</strong>: <span id="promedio-presion-atmosferica"></span></p>
         </div>
         
         <div id="constantes">
             <h2>Valores de Constantes</h2>
-            <p>Lambda: <span id="constante-lambda"></span></p>
-            <p>Delta: <span id="constante-delta"></span></p>
-            <p>Rho: <span id="constante-rho"></span></p>
-            <p>Cp: <span id="constante-cp"></span></p>
-            <p>Gamma: <span id="constante-gamma"></span></p>
+            <p>Lambda <strong>(adimensional)</strong>: <span id="constante-lambda"></span></p>
+            <p>Delta <strong>(kPa/°C)</strong>: <span id="constante-delta"></span></p>
+            <p>Rho <strong>(kg/m³)</strong>: <span id="constante-rho"></span></p>
+            <p>Cp <strong>(J/(kg·K))</strong>: <span id="constante-cp"></span></p>
+            <p>Gamma <strong>(kPa/°C)</strong>: <span id="constante-gamma"></span></p>
         </div>
 
         <div id="resultado-eto">
             <h2>Resultado de ETo</h2>
-            <p>ETo Calculada: <span id="eto-calculada"></span></p>
+            <p>ETo Calculada <strong>(mm/día)</strong>:  <span id="eto-calculada"></span></p>
         </div>
-        
+    
+    
         <div id="lisimetro-input">
             <h2>Valor del Lisímetro</h2>
             <input type="number" id="input-lisimetro" placeholder="Ingrese el valor del lisímetro">
@@ -76,21 +77,55 @@
             return isLocalhost ? 'http://localhost:8080' : `http://${location.hostname}:8080`;
         }
 
+
+        // Coeficientes de calibración (a y b) obtenidos de la calibración del LDR
+        const a = 12345; // Valor de ejemplo para el coeficiente a
+        const b = -1.234; // Valor de ejemplo para el coeficiente b
+
+        // Función para convertir la resistencia del LDR (ohmios) a lux
+        function ldrToLux(resistanceLDR) {
+            return a * Math.pow(resistanceLDR, b);
+        }
+
+        // Función para convertir lux a irradiancia (W/m²)
+        function luxToIrradiance(lux) {
+            return lux * 0.0079; // Aproximación para luz solar
+        }
+
+        // Función para convertir irradiancia (W/m²) a radiación solar neta (MJ/m²/día)
+        function irradianceToRn(irradiance) {
+            return irradiance * 0.0864; // Conversión de W/m² a MJ/m²/día
+        }
+
+        // Función principal para convertir resistencia LDR a radiación solar neta (MJ/m²/día)
+        function RadiacionSolar(resistanceLDR) {
+            const lux = ldrToLux(resistanceLDR);
+            const irradiance = luxToIrradiance(lux);
+            const rad_solar = irradianceToRn(irradiance);
+            return rad_solar;
+        }
+
         function fetchPromedios() {
             const baseURL = getBaseURL();
             fetch(`${baseURL}/sensores/etr-data`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('promedio-temperatura').textContent = data.temperatura || '22.5';
-                    document.getElementById('promedio-humedad-relativa').textContent = data.humedad_relativa || '65.2';
-                    document.getElementById('promedio-radiacion-solar').textContent = data.radiacion_solar || '800';
-                    document.getElementById('promedio-velocidad-viento').textContent = data.velocidad_viento || '5.4';
-                    document.getElementById('promedio-presion-atmosferica').textContent = data.presion_atmosferica || '1013.25';
+                    //document.getElementById('promedio-temperatura').textContent = data.temperatura_bmp280 || 'N/A';
+                    document.getElementById('promedio-temperatura').textContent = (data.temperatura_dht22 + data.temperatura_bmp280 )/2 || 'N/A';
+                    document.getElementById('promedio-humedad-relativa').textContent = data.humedad_relativa || 'N/A';
+                    document.getElementById('promedio-radiacion-solar').textContent = RadiacionSolar(data.radiacion_solar) || 'N/A';
+                    document.getElementById('promedio-velocidad-viento').textContent = metrosXseg(data.velocidad_viento) || 'N/A';
+                    document.getElementById('promedio-presion-atmosferica').textContent = data.presion_atmosferica / 10 || 'N/A';
                 })
                 .catch(error => {
                     console.error('Error al obtener los promedios:', error);
                     document.getElementById('promedios').textContent = 'Error al obtener los promedios';
                 });
+        }
+        
+        function metrosXseg(val) {
+            const res = 1000*val/3600;
+            return res;
         }
 
         function fetchConstantes() {

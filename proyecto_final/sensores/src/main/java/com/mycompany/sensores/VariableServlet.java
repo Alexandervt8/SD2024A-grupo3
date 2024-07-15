@@ -45,7 +45,7 @@ public class VariableServlet extends HttpServlet {
     private void createVariableDataTableIfNotExists() {
         String sql = "CREATE TABLE IF NOT EXISTS VariableData (" +
                 "    id BIGINT PRIMARY KEY, " +
-                "    ide VARCHAR, " +
+                "    idSen VARCHAR, " +
                 "    nombreEst VARCHAR, " +
                 "    nombre VARCHAR, " +
                 "    valor DOUBLE, " +
@@ -118,7 +118,7 @@ public class VariableServlet extends HttpServlet {
     
     private void insertVariableData(List<VariableData> variableDataList) {
         String maxIdQuery = "SELECT COALESCE(MAX(id), 0) FROM VariableData";
-        String insertSql = "MERGE INTO VariableData (id, ide, nombreEst, nombre, valor, unidad, tiempo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSql = "MERGE INTO VariableData (id, idSen, nombreEst, nombre, valor, unidad, tiempo) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             List<List<?>> maxIdResult = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(maxIdQuery)).getAll();
@@ -147,7 +147,7 @@ public class VariableServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        String sql = "SELECT id, ide, nombreEst, nombre, valor, unidad, tiempo FROM VariableData";
+        String sql = "SELECT id, idSen, nombreEst, nombre, valor, unidad, tiempo FROM VariableData";
         try {
             List<List<?>> data = ignite.cache("VariableDataCache").query(new SqlFieldsQuery(sql)).getAll();
 
