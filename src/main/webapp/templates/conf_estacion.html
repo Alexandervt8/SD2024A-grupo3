@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Estación Automática</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+    <div id="content">
+        <h1>Configuración de Estación</h1>
+        <form id="configForm">
+            <div class="section">
+                <h2>Configuración de la Estación</h2>
+                <label for="stationName">Nombre de la Estación:</label>
+                <input type="text" id="stationName" name="stationName" class="input-wide" required><br>
+                <label for="stationLetter">Letra que identifica la Estación:</label>
+                <input type="text" id="stationLetter" name="stationLetter" class="input-wide" required maxlength="1"><br>
+                <label for="localPath">Ruta local de la Estación (para archivos XML):</label>
+                <input type="text" id="localPath" name="localPath" class="input-wide" required><br>
+                <label for="serverPath">Ruta del Servidor :</label>
+                <input type="text" id="serverPath" name="serverPath" class="input-wide" required><br>
+                <label for="serverPath">Parametro para subir :</label>
+                <input type="text" id="serverSubirPath" name="serverPath" class="input-wide" required><br>
+                <label for="serverPath">Parametro para direccionar:</label>
+                <input type="text" id="serverDireccionarPath" name="serverPath" class="input-wide" required><br>
+                <button type="button" onclick="conf_estacion()">Guardar Configuración</button>
+            </div>
+        </form>
+        <pre id="output"></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            fetch('/get_config')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('stationName').value = data.stationName;
+                document.getElementById('stationLetter').value = data.stationLetter;
+                document.getElementById('localPath').value = data.localPath;
+                document.getElementById('serverPath').value = data.serverPath;
+                document.getElementById('serverSubirPath').value = data.serverSubirPath;
+                document.getElementById('serverDireccionarPath').value = data.serverDireccionarPath;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function conf_estacion() {
+            const stationName = document.getElementById('stationName').value;
+            const stationLetter = document.getElementById('stationLetter').value;
+            const localPath = document.getElementById('localPath').value;
+            const serverPath = document.getElementById('serverPath').value;
+            const serverDireccionarPath = document.getElementById('serverDireccionarPath').value;
+            const serverSubirPath = document.getElementById('serverSubirPath').value;
+
+            const configData = {
+                stationName: stationName,
+                stationLetter: stationLetter,
+                localPath: localPath,
+                serverPath: serverPath,
+                serverDireccionarPath: serverDireccionarPath,
+                serverSubirPath: serverSubirPath
+            };
+
+            fetch('/save_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(configData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('output').textContent = data.message;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script src="{{ url_for('static', filename='menu.js') }}"></script>
+</body>
+</html>
+
+

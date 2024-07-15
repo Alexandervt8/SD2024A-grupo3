@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación de Lecturas para Cálculo de Evapotranspiración</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
+    <div id="content">
+    
+        <h1>Estación de Lecturas para Cálculo de Evapotranspiración</h1>
+    
+        <main>
+            <section>
+                <h2>Descripción de la Estación</h2>
+                <p>La estación de lecturas para el cálculo de evapotranspiración es un sistema automatizado diseñado para monitorear condiciones ambientales clave que afectan el ciclo del agua en la agricultura. Utiliza una red de sensores precisos para recopilar datos en tiempo real de factores como temperatura, humedad relativa, radiación solar, velocidad del viento y presión atmosférica.</p>
+                <p>Estos datos son esenciales para calcular la evapotranspiración (ET), un indicador crítico utilizado en la gestión hídrica agrícola para determinar la cantidad de agua que se pierde por evaporación del suelo y transpiración de las plantas.</p>
+            </section>
+            <section>
+                <h2>Conexiones con Arduino</h2>
+                <p>La estación se conecta de manera inalámbrica o mediante cableado a dispositivos Arduino equipados con sensores específicos. Estos dispositivos están estratégicamente distribuidos en diferentes áreas del terreno agrícola para capturar variaciones locales en las condiciones ambientales.</p>
+                <p>Mediante interfaces Bluetooth o USB, la estación recibe datos en tiempo real de los sensores Arduino, los cuales son procesados y almacenados para su posterior análisis. Esta comunicación bidireccional no solo permite la transmisión de datos ambientales, sino también la configuración remota de parámetros y el monitoreo del estado de los sensores.</p>
+                <p>La interoperabilidad con Arduino proporciona flexibilidad y escalabilidad al sistema, permitiendo la expansión y la adaptación a diferentes necesidades agrícolas y condiciones ambientales cambiantes.</p>
+            </section>
+            <section>
+                <h2>Aplicaciones y Beneficios</h2>
+                <p>La información recopilada por la estación de lecturas es fundamental para varios aspectos de la gestión agrícola, incluyendo:</p>
+                <ul>
+                    <li><strong>Optimización del Riego:</strong> Determina los momentos óptimos para regar los cultivos, minimizando el desperdicio de agua y maximizando la eficiencia hídrica.</li>
+                    <li><strong>Predicción Climática:</strong> Contribuye a la generación de pronósticos climáticos locales basados en datos históricos y en tiempo real.</li>
+                    <li><strong>Monitoreo Ambiental:</strong> Ayuda a evaluar el impacto ambiental de las prácticas agrícolas y a mantener la sostenibilidad de los recursos naturales.</li>
+                </ul>
+                <p>Además, la estación facilita la integración con sistemas de gestión agrícola y plataformas de análisis de datos, proporcionando información valiosa para la toma de decisiones informadas y la optimización de los procesos agrícolas.</p>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Estación de Lecturas para Cálculo de Evapotranspiración. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='menu.js') }}"></script>
+</body>
+</html>
