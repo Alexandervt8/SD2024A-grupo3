@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Datos de Sensores</title>
     <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
 </head>
@@ -9,7 +10,10 @@
 
     <div id="content">
         <h1>Datos de Sensores</h1>
-        <button onclick="fetchSensorData()" class="button">Obtener Datos de Sensores</button>
+        <div class="columna-container">
+            <p id="readingCount">Cantidad de lecturas: 0</p> <!-- Nuevo elemento para mostrar la cantidad de lecturas -->
+            <button onclick="fetchSensorData()" class="button">Obtener Datos de Sensores</button>
+        </div>
 
         <table id="sensorTable">
             <thead>
@@ -63,18 +67,38 @@
                         const date = new Date(sensor[6]);
                         fechaCell.textContent = date.toLocaleString();
                     });
+
+                    // Actualizar la cantidad de lecturas
+                    document.getElementById('readingCount').textContent = `Cantidad de lecturas: ${data.length}`;
                 })
                 .catch(error => {
                     console.error('Error al obtener los datos del sensor:', error);
                 });
         }
 
+        function updateReadingCount() {
+            fetchSensorData();
+            const baseURL = getBaseURL();
+            fetch(`${baseURL}/sensores/variables`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('readingCount').textContent = `Cantidad de lecturas: ${data.length}`;
+                })
+                .catch(error => {
+                    console.error('Error al actualizar la cantidad de lecturas:', error);
+                });
+        }
+
+        // Actualizar la cantidad de lecturas cada 5 segundos
+        setInterval(updateReadingCount, 5000);
+
         // Cargar las constantes al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            loadConstants(); // Llama a la función loadConstants desde tu código original
+            updateReadingCount(); // Actualizar la cantidad de lecturas al cargar la página
         });
     </script>
 </body>
 </html>
+
 
 

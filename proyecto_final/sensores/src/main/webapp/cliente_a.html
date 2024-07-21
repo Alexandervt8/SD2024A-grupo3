@@ -1,56 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Promedio de Datos de Sensores</title>
-    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="scripts/funciones_servidor.js"></script> 
 </head>
 <body>
     <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
 
     <div id="content">
         <h1>Promedio de Datos de Sensores</h1>
-        <button onclick="fetchPromedios()" class="button">Obtener Promedios</button>
-        <button onclick="fetchConstantes()" class="button">Obtener Constantes</button>
-        <button onclick="calcularETo()" class="button">Calcular ETo</button>
-        
-        <div id="promedios">
-            <h2>Promedios de Sensores</h2>
-            <p>Temperatura <strong>(°C)</strong>: <span id="promedio-temperatura"></span></p>
-            <p>Humedad Relativa <strong>(%)</strong>: <span id="promedio-humedad-relativa"></span></p>
-            <p>Radiacion Solar <strong>(MJ/m²/día)</strong>: <span id="promedio-radiacion-solar"></span></p>
-            <p>Velocidad del Viento <strong>(m/s)</strong>: <span id="promedio-velocidad-viento"></span></p>
-            <p>Presion Atmosferica <strong>(KPa)</strong>: <span id="promedio-presion-atmosferica"></span></p>
+         <div class="modo-container">
+            <label>
+                <input type="radio" name="modo" value="automatico" onchange="cambiarModo(this.value)"> Modo Automático
+            </label>
+            <label>
+                <input type="radio" name="modo" value="manual" onchange="cambiarModo(this.value)" checked> Modo Manual
+            </label>
         </div>
         
-        <div id="constantes">
-            <h2>Valores de Constantes</h2>
-            <p>Lambda <strong>(adimensional)</strong>: <span id="constante-lambda"></span></p>
-            <p>Delta <strong>(kPa/°C)</strong>: <span id="constante-delta"></span></p>
-            <p>Rho <strong>(kg/m³)</strong>: <span id="constante-rho"></span></p>
-            <p>Cp <strong>(J/(kg·K))</strong>: <span id="constante-cp"></span></p>
-            <p>Gamma <strong>(kPa/°C)</strong>: <span id="constante-gamma"></span></p>
-        </div>
+        <button onclick="fetchPromedios()" class="button modo_b">Obtener Promedios</button>
+        <button onclick="fetchConstantes()" class="button modo_b">Obtener Constantes</button>
+        <button onclick="calcularETo()" class="button modo_b">Calcular ETo</button>
+        
+        <div class="columna-container">
+            <div id="promedios" class="columna">
+                <h2>Promedios de Sensores</h2>
+                <p>Temperatura <strong>(°C)</strong>: <span id="promedio-temperatura"></span></p>
+                <p>Humedad Relativa <strong>(%)</strong>: <span id="promedio-humedad-relativa"></span></p>
+                <p>Radiacion Solar <strong>(MJ/m²/día)</strong>: <span id="promedio-radiacion-solar"></span></p>
+                <p>Velocidad del Viento <strong>(m/s)</strong>: <span id="promedio-velocidad-viento"></span></p>
+                <p>Presion Atmosferica <strong>(KPa)</strong>: <span id="promedio-presion-atmosferica"></span></p>
+            </div>
 
+            <div id="constantes" class="columna">
+                <h2>Valores de Constantes</h2>
+                <p>Lambda <strong>(adimensional)</strong>: <span id="constante-lambda"></span></p>
+                <p>Delta <strong>(kPa/°C)</strong>: <span id="constante-delta"></span></p>
+                <p>Rho <strong>(kg/m³)</strong>: <span id="constante-rho"></span></p>
+                <p>Cp <strong>(J/(kg·K))</strong>: <span id="constante-cp"></span></p>
+                <p>Gamma <strong>(kPa/°C)</strong>: <span id="constante-gamma"></span></p>
+            </div>
+        </div>
         <div id="resultado-eto">
             <h2>Resultado de ETo</h2>
             <p>ETo Calculada <strong>(mm/día)</strong>:  <span id="eto-calculada"></span></p>
         </div>
     
-    
-        <div id="lisimetro-input">
-            <h2>Valor del Lisímetro</h2>
-            <input type="number" id="input-lisimetro" placeholder="Ingrese el valor del lisímetro">
-            <button onclick="calcularKC()" class="button">Calcular KC</button>
+        <div class="columna-container">
+            <div id="lisimetro-input" class="columna">
+                <h2>Valor del Lisímetro</h2>
+                <input type="number" id="input-lisimetro" placeholder="Ingrese el valor del lisímetro">
+                <button onclick="calcularKC()" class="button">Calcular KC</button>
+            </div>
+
+            <div id="resultado-kc" class="columna">
+                <h2>Resultado de KC</h2>
+                <p>KC Calculado: <span id="kc-calculado"></span></p>
+                <button onclick="compararKC()" class="button">Comparar KC</button>
+            </div>
+
+            
         </div>
-        
-        <div id="resultado-kc">
-            <h2>Resultado de KC</h2>
-            <p>KC Calculado: <span id="kc-calculado"></span></p>
-        </div>
-        
-        <button onclick="compararKC()" class="button">Comparar KC</button>
-        
         <div id="cultivos-mismo-kc">
             <h2>Cultivos con el mismo KC inicial</h2>
             <table id="tabla-cultivos">
@@ -68,185 +80,32 @@
             </table>
         </div>
     </div>
-
     <script src="menu.js"></script> <!-- Incluir el archivo JavaScript del menú -->
-
     <script>
-        function getBaseURL() {
-            const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-            return isLocalhost ? 'http://localhost:8080' : `http://${location.hostname}:8080`;
-        }
+        let intervalId;
 
+        function cambiarModo(modo) {
+            const botones = document.querySelectorAll('.button');
+            if (modo === 'automatico') {
+                botones.forEach(boton => boton.disabled = true);
+                intervalId = setInterval(() => {
+                    fetchPromedios();
+                    fetchConstantes();     
+                }, 5000);
+                intervalId = setInterval(() => {
+                    calcularETo();  
+                }, 8000);
 
-        // Coeficientes de calibración (a y b) obtenidos de la calibración del LDR
-        const a = 12345; // Valor de ejemplo para el coeficiente a
-        const b = -1.234; // Valor de ejemplo para el coeficiente b
-
-        // Función para convertir la resistencia del LDR (ohmios) a lux
-        function ldrToLux(resistanceLDR) {
-            return a * Math.pow(resistanceLDR, b);
-        }
-
-        // Función para convertir lux a irradiancia (W/m²)
-        function luxToIrradiance(lux) {
-            return lux * 0.0079; // Aproximación para luz solar
-        }
-
-        // Función para convertir irradiancia (W/m²) a radiación solar neta (MJ/m²/día)
-        function irradianceToRn(irradiance) {
-            return irradiance * 0.0864; // Conversión de W/m² a MJ/m²/día
-        }
-
-        // Función principal para convertir resistencia LDR a radiación solar neta (MJ/m²/día)
-        function RadiacionSolar(resistanceLDR) {
-            const lux = ldrToLux(resistanceLDR);
-            const irradiance = luxToIrradiance(lux);
-            const rad_solar = irradianceToRn(irradiance);
-            return rad_solar;
-        }
-
-        function fetchPromedios() {
-            const baseURL = getBaseURL();
-            fetch(`${baseURL}/sensores/etr-data`)
-                .then(response => response.json())
-                .then(data => {
-                    //document.getElementById('promedio-temperatura').textContent = data.temperatura_bmp280 || 'N/A';
-                    document.getElementById('promedio-temperatura').textContent = (data.temperatura_dht22 + data.temperatura_bmp280 )/2 || 'N/A';
-                    document.getElementById('promedio-humedad-relativa').textContent = data.humedad_relativa || 'N/A';
-                    document.getElementById('promedio-radiacion-solar').textContent = RadiacionSolar(data.radiacion_solar) || 'N/A';
-                    document.getElementById('promedio-velocidad-viento').textContent = metrosXseg(data.velocidad_viento) || 'N/A';
-                    document.getElementById('promedio-presion-atmosferica').textContent = data.presion_atmosferica / 10 || 'N/A';
-                })
-                .catch(error => {
-                    console.error('Error al obtener los promedios:', error);
-                    document.getElementById('promedios').textContent = 'Error al obtener los promedios';
-                });
-        }
-        
-        function metrosXseg(val) {
-            const res = 1000*val/3600;
-            return res;
-        }
-
-        function fetchConstantes() {
-            const baseURL = getBaseURL();
-            fetch(`${baseURL}/sensores/constants`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('constante-lambda').textContent = data.lambda || 'N/A';
-                    document.getElementById('constante-delta').textContent = data.delta || 'N/A';
-                    document.getElementById('constante-rho').textContent = data.rho || 'N/A';
-                    document.getElementById('constante-cp').textContent = data.cp || 'N/A';
-                    document.getElementById('constante-gamma').textContent = data.gamma || 'N/A';
-                })
-                .catch(error => {
-                    console.error('Error al obtener las constantes:', error);
-                    document.getElementById('constantes').textContent = 'Error al obtener las constantes';
-                });
-        }
-
-        function calcularETo() {
-            const baseURL = getBaseURL();
-            const promedios = {
-                temperatura: parseFloat(document.getElementById('promedio-temperatura').textContent),
-                humedadRelativa: parseFloat(document.getElementById('promedio-humedad-relativa').textContent),
-                radiacionSolar: parseFloat(document.getElementById('promedio-radiacion-solar').textContent),
-                velocidadViento: parseFloat(document.getElementById('promedio-velocidad-viento').textContent),
-                presionAtmosferica: parseFloat(document.getElementById('promedio-presion-atmosferica').textContent)
-            };
-            const constantes = {
-                lambda: parseFloat(document.getElementById('constante-lambda').textContent),
-                delta: parseFloat(document.getElementById('constante-delta').textContent),
-                rho: parseFloat(document.getElementById('constante-rho').textContent),
-                cp: parseFloat(document.getElementById('constante-cp').textContent),
-                gamma: parseFloat(document.getElementById('constante-gamma').textContent)
-            };
-
-            const parametros = {...promedios, ...constantes};
-
-            fetch(`${baseURL}/sensores/calculateETo`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(parametros)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('eto-calculada').textContent = data.eto || 'N/A';
-                })
-                .catch(error => {
-                    console.error('Error al calcular ETo:', error);
-                    document.getElementById('resultado-eto').textContent = 'Error al calcular ETo';
-                });
-        }
-        function calcularKC() {
-            const valorLisimetro = parseFloat(document.getElementById('input-lisimetro').value);
-            const etoCalculada = parseFloat(document.getElementById('eto-calculada').textContent);
-
-            if (isNaN(valorLisimetro)) {
-                alert('Por favor ingrese un valor numérico para el lisímetro.');
-                return;
+            } else {
+                botones.forEach(boton => boton.disabled = false);
+                clearInterval(intervalId);
             }
-
-            if (isNaN(etoCalculada)) {
-                alert('No se ha calculado ETo aún. Por favor, obtenga primero los promedios y constantes.');
-                return;
-            }
-
-            const kcCalculado = valorLisimetro / etoCalculada;
-
-            document.getElementById('kc-calculado').textContent = kcCalculado.toFixed(2); // Ajustar según necesidades de formato
         }
-        
-        function compararKC() {
-            const baseURL = getBaseURL();
-            const kcCalculado = parseFloat(document.getElementById('kc-calculado').textContent);
-            //const kcCalculado = 0.2;
 
-            if (isNaN(kcCalculado)) {
-                alert('No se ha calculado KC aún. Por favor, calcule primero el KC.');
-                return;
-            }
-
-            fetch(`${baseURL}/sensores/cultivos`)
-                .then(response => response.json())
-                .then(data => {
-                    const cultivosMismoKC = data.filter(cultivo => Math.abs(cultivo[10] - kcCalculado) <= 0.07);
-                    const tablaCuerpo = document.getElementById('tabla-cuerpo');
-                    tablaCuerpo.innerHTML = '';
-
-                    if (cultivosMismoKC.length > 0) {
-                        cultivosMismoKC.forEach(cultivo => {
-                            const fila = document.createElement('tr');
-                            const cultivoCell = document.createElement('td');
-                            cultivoCell.textContent = cultivo[2]; // Nombre del cultivo
-                            const variedadCell = document.createElement('td');
-                            variedadCell.textContent = cultivo[3]; // Variedad del cultivo
-                            const regionCell = document.createElement('td');
-                            regionCell.textContent = cultivo[1]; // Región del cultivo
-                            const kcCell = document.createElement('td');
-                            kcCell.textContent = cultivo[10]; // KC Incial
-                            fila.appendChild(cultivoCell);
-                            fila.appendChild(variedadCell);
-                            fila.appendChild(regionCell);
-                            fila.appendChild(kcCell);
-                            tablaCuerpo.appendChild(fila);
-                        });
-                    } else {
-                        const filaVacia = document.createElement('tr');
-                        const cellVacia = document.createElement('td');
-                        cellVacia.colSpan = 4;
-                        cellVacia.textContent = 'No se encontraron cultivos con el mismo KC inicial.';
-                        filaVacia.appendChild(cellVacia);
-                        tablaCuerpo.appendChild(filaVacia);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al obtener los cultivos:', error);
-                    document.getElementById('tabla-cultivos').textContent = 'Error al obtener los cultivos';
-                });
-        }
+        // Cargar las constantes al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            
+        });
     </script>
 </body>
 </html>
