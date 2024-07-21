@@ -21,10 +21,12 @@
                 <input type="text" id="localPath" name="localPath" class="input-wide" required><br>
                 <label for="serverPath">Ruta del Servidor :</label>
                 <input type="text" id="serverPath" name="serverPath" class="input-wide" required><br>
-                <label for="serverPath">Parametro para subir :</label>
-                <input type="text" id="serverSubirPath" name="serverPath" class="input-wide" required><br>
-                <label for="serverPath">Parametro para direccionar:</label>
-                <input type="text" id="serverDireccionarPath" name="serverPath" class="input-wide" required><br>
+                <label for="serverSubirPath">Parametro para subir :</label>
+                <input type="text" id="serverSubirPath" name="serverSubirPath" class="input-wide" required><br>
+                <label for="serverDireccionarPath">Parametro para direccionar:</label>
+                <input type="text" id="serverDireccionarPath" name="serverDireccionarPath" class="input-wide" required><br>
+                <label for="comPort">Puerto COM:</label>
+                <input type="text" id="comPort" name="comPort" class="input-wide" required><br>
                 <button type="button" onclick="conf_estacion()">Guardar Configuración</button>
             </div>
         </form>
@@ -41,6 +43,7 @@
                 document.getElementById('serverPath').value = data.serverPath;
                 document.getElementById('serverSubirPath').value = data.serverSubirPath;
                 document.getElementById('serverDireccionarPath').value = data.serverDireccionarPath;
+                document.getElementById('comPort').value = data.comPort;
             })
             .catch(error => console.error('Error:', error));
         });
@@ -50,16 +53,18 @@
             const stationLetter = document.getElementById('stationLetter').value;
             const localPath = document.getElementById('localPath').value;
             const serverPath = document.getElementById('serverPath').value;
-            const serverDireccionarPath = document.getElementById('serverDireccionarPath').value;
             const serverSubirPath = document.getElementById('serverSubirPath').value;
+            const serverDireccionarPath = document.getElementById('serverDireccionarPath').value;
+            const comPort = document.getElementById('comPort').value;
 
             const configData = {
                 stationName: stationName,
                 stationLetter: stationLetter,
                 localPath: localPath,
                 serverPath: serverPath,
+                serverSubirPath: serverSubirPath,
                 serverDireccionarPath: serverDireccionarPath,
-                serverSubirPath: serverSubirPath
+                comPort: comPort
             };
 
             fetch('/save_config', {
@@ -79,5 +84,6 @@
     <script src="{{ url_for('static', filename='menu.js') }}"></script>
 </body>
 </html>
+
 
 

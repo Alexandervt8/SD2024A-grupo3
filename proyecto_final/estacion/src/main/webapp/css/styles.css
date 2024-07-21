@@ -42,15 +42,17 @@ a:hover {
 .styled-list {
         border: 1px solid black; /* Borde negro */
         background-color: white; /* Fondo blanco */
-        padding: 10px; /* Espaciado interno */
-        width: 200px; /* Ancho deseado */
-    }
+        padding: 10px 0; /* Espaciado interno */
+        width: 100%;
+        max-width: 100%;
+        resize: none;
+}
 .styled-list li {
         list-style-type: none; /* Quita los puntos predeterminados */
         padding: 5px 10px; /* Espaciado interno */
         margin: 5px 0; /* Margen superior e inferior */
         border-bottom: 1px solid gray; /* Borde inferior gris entre elementos */
-    }
+}
 #listbox {
             padding: 10px;
             max-height: 200px; /* Ajusta esto según cuántos elementos esperas en la lista */
@@ -200,4 +202,20 @@ table tr:hover {
 
 .formula-description {
     margin-top: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+.progress-bar-fill {
+    height: 20px;
+    width: 0%;
+    background-color: #4caf50;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 20px;
+    color: white;
 }

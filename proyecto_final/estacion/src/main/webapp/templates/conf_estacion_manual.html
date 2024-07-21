@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de Estación Automática</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
 </head>
 <body>
     <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
@@ -17,9 +18,9 @@
         <form id="configForm">
             <div class="section">
                 <h2>Parámetros de Lectura</h2>
-                <label for="n">Número de veces (n):</label>
+                <label for="n">Nro de veces que se repetira cada toma (n):</label>
                 <input type="number" id="n" name="n" required><br>
-                <label for="m">Duración (m) en segundos:</label>
+                <label for="m">Duración de cada toma de lectura (segundos):</label>
                 <input type="number" id="m" name="m" required><br>
                 <button type="button" onclick="startReading()">Comenzar a tomar lecturas</button>
             </div>
@@ -61,217 +62,7 @@
         </form>
         <pre id="output"></pre>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            fetch('/get_config')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('letra').value = data.stationLetter;
-                document.getElementById('nombreE').value = data.stationName;
-            })
-            .catch(error => console.error('Error:', error));
-        });
-        
-
-        function limpiar_areas() {
-            document.getElementById('comando').value = '';
-            document.getElementById('resultado').value = '';
-            document.getElementById('comando2').value = '';
-            document.getElementById('resultado2').value = '';
-        }     
-        
-        function startReading() {
-            const letra = document.getElementById('letra').value;
-            const n = document.getElementById('n').value;
-            const m = document.getElementById('m').value;
-
-            fetch('/start_reading', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ letra: letra, n: n, m: m })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('output').textContent = data.message;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function executeScript() {
-            const numArchivos = document.getElementById('num_archivos').value;
-            const ideE = document.getElementById('letra').value;
-            const nombreE = document.getElementById('nombreE').value;
-            fetch('/create_xml', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    num_archivos: numArchivos,
-                    ideE: ideE,
-                    nombreE: nombreE
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const output = document.getElementById('output');
-                output.textContent = data.message;
-
-                // Limpiar la lista actual
-                const fileList = document.getElementById('file-list');
-                fileList.innerHTML = '';
-
-                // Verificar si data.archivos está definido y es una lista
-                if (data.archivos && Array.isArray(data.archivos)) {
-                    // Agregar los nuevos archivos a la lista
-                    data.archivos.forEach(archivo => {
-                        const li = document.createElement('li');
-                        li.textContent = archivo;
-                        fileList.appendChild(li);
-                    });
-                } else {
-                console.error('No se encontraron archivos en la respuesta:', data);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function prepararXML() {
-             fetch('/get_config')
-            .then(response => response.json())
-            .then(data => {
-                const nombreE = data.stationName;
-                const rutaLocalE = data.localPath;
-                const rutaServidorE = data.serverPath + data.serverSubirPath;
-
-                const fileList = document.getElementById('file-list');
-                const files = fileList.getElementsByTagName('li');
-
-                const commandOutput = document.getElementById('resultado');
-                commandOutput.innerHTML = ''; // Limpiar salida previa
-
-                Array.from(files).forEach(file => {
-                    const archivoNombre = file.textContent;
-                    const localFilePath = `${rutaLocalE}/${archivoNombre}`;
-                    const curlCommand = `curl -F "stationName=${nombreE}" -F "file=@${localFilePath}" ${rutaServidorE}`;
-
-                    // Agregar el comando al textarea
-                    comando.value += `${curlCommand}\n`;
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        
-        function subirXML() {
-            // Obtener el contenido del textarea comando
-            const textarea = document.getElementById('comando');
-            const commandLines = textarea.value.trim().split('\n');
-
-            // Limpiar la salida previa
-            document.getElementById('resultado').value = '';
-
-            // Enviar los comandos al servidor Flask
-            fetch('/execute_curl_commands', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    curlCommands: commandLines
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Mostrar el resultado obtenido del servidor Flask en el textarea resultado
-                document.getElementById('resultado').value = data.resultado;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Manejar errores si es necesario
-                document.getElementById('resultado').value = 'Error al ejecutar los comandos curl.';
-            });
-        }
-        
-        function direccionarXML() {
-            fetch('/get_config')
-                .then(response => response.json())
-                .then(data => {
-                    // Construir la URL completa usando serverPath y serverSubirPath
-                    const rutaServidorE = data.serverPath + data.serverDireccionarPath;
-
-                    // Obtener el contenido del textarea resultado
-                    const commandOutput = document.getElementById('resultado').value.trim();
-
-                    // Dividir el contenido en líneas separadas
-                    const commandLines = commandOutput.split('\n');
-
-                    let comandos = []; // Array para almacenar los comandos generados
-
-                    commandLines.forEach(command => {
-                        // Verificar si la línea contiene una ruta de archivo XML
-                        if (command.trim().endsWith('.xml')) {
-                            // Construir el comando curl para esta línea
-                            const curlCommand = `curl -X POST -d "xmlFilePath=${command.trim()}" ${rutaServidorE}`;
-                            comandos.push(curlCommand);
-                        }
-                    });
-
-                    // Mostrar los comandos en el textarea comando2
-                    const comando2TextArea = document.getElementById('comando2');
-                    comando2TextArea.value = comandos.join('\n');
-
-                    // Mensaje de prueba para verificar si los comandos se están mostrando correctamente
-                    console.log('Comandos generados:');
-                    console.log(comandos.join('\n'));
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        
-        function procesarXML() {
-            // Obtener el contenido del textarea comando
-            const textarea = document.getElementById('comando2');
-            const commandLines = textarea.value.trim().split('\n');
-
-            // Limpiar la salida previa
-            document.getElementById('resultado2').value = '';
-
-            // Enviar los comandos al servidor Flask
-            fetch('/execute_curl_commands', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    curlCommands: commandLines
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Mostrar el resultado obtenido del servidor Flask en el textarea resultado
-                document.getElementById('resultado2').value = data.resultado;
-                desplazarE();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Manejar errores si es necesario
-                document.getElementById('resultado2').value = 'Error al ejecutar los comandos curl.';
-            });
-        }
-
-        function desplazarE() {
-            // Obtener las listas de origen y destino
-            const fileList = document.getElementById('file-list');
-            const fileListServ = document.getElementById('file-list-serv');
-
-            // Mover los elementos de la lista de origen a la lista de destino
-            while (fileList.firstChild) {
-                fileListServ.appendChild(fileList.firstChild);
-            }
-        }
-
-    </script>
     <script src="{{ url_for('static', filename='menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/funciones.js') }}"></script>
 </body>
 </html>

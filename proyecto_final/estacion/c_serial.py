@@ -2,16 +2,17 @@ import serial
 import time
 import sys
 
-if len(sys.argv) != 4:
-    print("Uso: python c_serial.py <letra> <num_repeticiones> <duracion_segundos>")
+if len(sys.argv) != 5:
+    print("Uso: python c_serial.py <letra> <num_repeticiones> <duracion_segundos> <puerto_COM>")
     sys.exit(1)
 
 letra = sys.argv[1]
 num_repeticiones = int(sys.argv[2])
 duracion_segundos = int(sys.argv[3])
+puerto_COM = sys.argv[4]
 
 # Abre el puerto serial
-ser = serial.Serial('COM4', 9600)
+ser = serial.Serial(puerto_COM, 9600)
 time.sleep(2)  # Esperar a que el Arduino se reinicie
 
 # Enviar la letra al Arduino

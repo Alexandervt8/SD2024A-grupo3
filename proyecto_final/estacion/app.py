@@ -132,7 +132,8 @@ def get_config():
             'localPath': root.find('rutaLocalEstacion').text,
             'serverPath': root.find('rutaServidorArchivos').text,
             'serverSubirPath': root.find('rutaServidorSubirArchivos').text,
-            'serverDireccionarPath': root.find('rutaServidorDireccionarArchivos').text
+            'serverDireccionarPath': root.find('rutaServidorDireccionarArchivos').text,
+            'comPort': root.find('puertoCOM').text
         }
     else:
         config_data = {
@@ -141,7 +142,8 @@ def get_config():
             'localPath': '',
             'serverPath': '',
             'serverSubirPath': '',
-            'serverDireccionarPath': ''
+            'serverDireccionarPath': '',
+            'comPort': ''
         }
 
     return jsonify(config_data)
@@ -156,6 +158,7 @@ def save_config():
     server_path = data.get('serverPath')
     server_subir_path = data.get('serverSubirPath')
     server_direccionar_path = data.get('serverDireccionarPath')
+    com_port = data.get('comPort')  
 
     # Crear el árbol XML
     root = ET.Element("configuracion")
@@ -165,6 +168,7 @@ def save_config():
     ET.SubElement(root, "rutaServidorArchivos").text = server_path
     ET.SubElement(root, "rutaServidorSubirArchivos").text = server_subir_path
     ET.SubElement(root, "rutaServidorDireccionarArchivos").text = server_direccionar_path
+    ET.SubElement(root, "puertoCOM").text = com_port  
 
     tree = ET.ElementTree(root)
 
@@ -178,7 +182,6 @@ def save_config():
     tree.write(xml_filename, encoding='utf-8', xml_declaration=True)
 
     return jsonify({'status': 'success', 'message': 'Configuración guardada correctamente en XML'})
-
 
 @app.route('/create_xml', methods=['POST'])
 def create_xml():
@@ -212,14 +215,24 @@ def start_reading():
     n = int(data['n'])
     m = int(data['m'])
 
+    # Leer la configuración para obtener el puerto COM
+    folder_path = os.path.join(os.getcwd(), 'archivos')
+    xml_filename = os.path.join(folder_path, 'configuracion_estacion.xml')
+    
+    if os.path.exists(xml_filename):
+        tree = ET.parse(xml_filename)
+        root = tree.getroot()
+        com_port = root.find('puertoCOM').text
+    else:
+        return jsonify({'status': 'error', 'message': 'No se encontró la configuración del puerto COM'}), 500
+
     try:
-        subprocess.Popen(['python', 'c_serial.py', letra, str(n), str(m)])
+        subprocess.Popen(['python', 'c_serial.py', letra, str(n), str(m), com_port])
     except Exception as e:
         error_message = f"Error al iniciar la lectura: {str(e)}"
         return jsonify({'status': 'error', 'message': error_message}), 500
 
     return jsonify({'status': 'success', 'message': 'Proceso de lectura iniciado correctamente'})
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

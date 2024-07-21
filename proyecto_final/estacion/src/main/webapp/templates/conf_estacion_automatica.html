@@ -10,14 +10,16 @@
     <div id="sidebar"></div> <!-- Aquí se cargará dinámicamente el menú -->
     <div id="content">
         <h1>Configuración de Estación Automática</h1>
+        <label for="letra">Id de Estacion:</label>
+        <input type="text" id="letra" name="letra" required readonly><br>
+        <label for="nombreE">Nombre de Estacion:</label>
+        <input type="text" id="nombreE" name="nombreE" required readonly><br>
         <form id="configForm">
             <div class="section">
                 <h2>Parámetros de Lectura</h2>
-                <label for="letra">Letra:</label>
-                <input type="text" id="letra" name="letra" required><br>
-                <label for="n">Número de veces (n):</label>
+                <label for="n">Nro de veces que se repetira cada toma (n):</label>
                 <input type="number" id="n" name="n" required><br>
-                <label for="m">Duración (m) en segundos:</label>
+                <label for="m">Duración de cada toma de lectura (segundos):</label>
                 <input type="number" id="m" name="m" required><br>
                 <button type="button" onclick="startReading()">Comenzar a tomar lecturas</button>
             </div>
@@ -25,100 +27,98 @@
                 <h2>Procesamiento de Archivos</h2>
                 <label for="num_archivos">Número de archivos a procesar:</label>
                 <input type="number" id="num_archivos" name="num_archivos" required><br>
-                <button type="button" onclick="executeScript()">Crear XML</button>
+                <label for="num_archivos">Velocidad de procesamiento (milisegundos):</label>
+                <input type="number" id="vel_archivos" name="vel_archivos" required><br>
             </div>
-            <div class="section">
-                <h2>Enviar Datos al Servidor</h2>
-                <label for="intervalo">Intervalo en minutos (opcional):</label>
-                <input type="number" id="intervalo" name="intervalo"><br>
-                <button type="button" onclick="uploadData()">Enviar Datos al Servidor</button>
+            <h2>Enviar Datos al Servidor</h2>
+            <div class="section2">
+                <div class="column-1">
+                    <h3>Archivos XML Listos</h3>
+                    <ul id="file-list" class="styled-list">
+                        <!-- Los archivos creados se agregarán dinámicamente aquí -->
+                    </ul>
+                </div>
+                <div class="column-2">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <button type="button" id="ejecutar" onclick="ejecutarTodo()">Programar subida de archivos</button>
+                    </div>
+                    <textarea id="comando" class="output-comando" readonly></textarea>
+                    <textarea id="resultado" class="output-resultado" readonly></textarea>
+                    <textarea id="comando2" class="output-comando" readonly></textarea>
+                    <textarea id="resultado2" class="output-resultado" readonly></textarea>
+                    <button type="button" onclick="limpiar_areas()">Limpiar</button>
+                </div>
+                <div class="column-3">
+                    <h3>Archivos XML en el servidor</h3>
+                    <ul id="file-list-serv" class="styled-list">
+                        <!-- Los archivos creados se agregarán dinámicamente aquí -->
+                    </ul>
+                </div>
             </div>
         </form>
+        <div class="progress-bar">
+            <div class="progress-bar-fill" id="progress-bar-fill">0%</div>
+        </div>
         <pre id="output"></pre>
     </div>
     <script>
-        function startReading() {
-            const letra = document.getElementById('letra').value;
-            const n = document.getElementById('n').value;
-            const m = document.getElementById('m').value;
-
-            fetch('/start_reading', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ letra: letra, n: n, m: m })
-            })
+        document.addEventListener('DOMContentLoaded', (event) => {
+            fetch('/get_config')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('output').textContent = data.message;
+                document.getElementById('letra').value = data.stationLetter;
+                document.getElementById('nombreE').value = data.stationName;
             })
             .catch(error => console.error('Error:', error));
+        });
+
+        // Función para actualizar la barra de progreso
+        function updateProgressBar(percentage) {
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            progressBarFill.style.width = percentage + '%';
+            progressBarFill.textContent = percentage + '%';
         }
 
-        function executeScript() {
-            const numArchivos = document.getElementById('num_archivos').value;
-
-            fetch('/create_xml', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ num_archivos: numArchivos })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('output').textContent = data.message;
-            })
-            .catch(error => console.error('Error:', error));
+        // Función para retrasar la ejecución
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        function uploadData() {
-            const numArchivos = document.getElementById('num_archivos').value;
-            const intervalo = document.getElementById('intervalo').value;
+        // Función para ejecutar todas las funciones en secuencia
+        async function ejecutarTodo() {
+            limpiar_areas();
+            const velArchivos = parseInt(document.getElementById('vel_archivos').value, 10);
 
-            fetch('/upload_xml', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ n: numArchivos, intervalo: intervalo })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('output').textContent = data.message;
-            })
-            .catch(error => console.error('Error:', error));
+            alert('Iniciando procesamiento');
+
+            try {
+                executeScript();
+                updateProgressBar(20); // Actualiza la barra al 20%
+                await delay(velArchivos);
+
+                prepararXML();
+                updateProgressBar(40); // Actualiza la barra al 40%
+                await delay(velArchivos);
+
+                subirXML();
+                updateProgressBar(60); // Actualiza la barra al 60%
+                await delay(velArchivos);
+
+                direccionarXML();
+                updateProgressBar(80); // Actualiza la barra al 80%
+                await delay(velArchivos);
+
+                procesarXML();
+                updateProgressBar(100); // Actualiza la barra al 100%
+
+            } catch (error) {
+                alert('Error en ejecutarTodo: ' + error.message);
+            }
         }
-
-        function progAutomatica() {
-            const letra = document.getElementById('letra').value;
-            const n = parseInt(document.getElementById('n').value);
-            const m = parseInt(document.getElementById('m').value);
-            const numArchivos = parseInt(document.getElementById('num_archivos').value);
-
-            startReading();
-
-            let intervalId = setInterval(() => {
-                fetch('/create_xml', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ num_archivos: 10 }) // Procesar cada 10 archivos
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('output').textContent = data.message;
-                    if (numArchivos <= 10) {
-                        clearInterval(intervalId);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }, 10000); // Cada 10 segundos
-        }
-        
+       
     </script>
     <script src="{{ url_for('static', filename='menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/funciones.js') }}"></script>
 </body>
 </html>
+
