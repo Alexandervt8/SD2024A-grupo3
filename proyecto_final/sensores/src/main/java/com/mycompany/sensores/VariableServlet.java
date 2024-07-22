@@ -145,6 +145,7 @@ public class VariableServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         String sql = "SELECT id, idSen, nombreEst, nombre, valor, unidad, tiempo FROM VariableData";
